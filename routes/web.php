@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\AppointmentController;
+use App\Models\Service;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +29,6 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\bookingController;
 
 Route::get('/dash', [DashboardController::class, 'index']);
 
@@ -64,7 +64,7 @@ Route::resource('contacts', ContactController::class);
 
 Route::resource('users', UserController::class);
 
-Route::resource('appointments', AppointmentController::class);
+Route::resource('appointments', AppointmentController::class)->middleware('auth');
 
 Route::get('appointments/{id}/restore', [AppointmentController::class, 'restore'])->name('appointments.restore');
 Route::delete('appointments/{id}/force-delete', [AppointmentController::class, 'forceDelete'])->name('appointments.forceDelete');
@@ -119,11 +119,11 @@ Route::get('/dashboard', function () {
 
 
 Route::get('/book-appointment', function () {
-    return view('book-appointment');
+    $services = Service::all();
+    return view('book-appointment',compact('services'));
 })->name('book-appointment');
 
-
-Route::post('/book-appointment', [AppointmentController::class, 'store'])->name('book-appointment');
+Route::post('/book-appointment', [AppointmentController::class, 'store'])->name('book-appointment-store');
 
 Route::get('/about', function () {
     return view('public.layout.about');
@@ -151,7 +151,7 @@ Route::get('/booking', function () {
     return view('public.layout.booking');
 });
 
-Route::get('/booking', [BookingController::class, 'show']);
+Route::get('/booking', [AppointmentController::class, 'index']);
 
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
@@ -170,8 +170,8 @@ Route::put('/profile', [ProfileController::class, 'update'])->name('profile.upda
 Route::get('/', [HomeController::class, 'index'])->name('homepage');
 
 
+// 
 
-Route::post('/book-appointment', [BookingController::class, 'store'])->name('book-appointment');
 
 Route::resource('customer',CustomerController::class);
 
@@ -192,5 +192,6 @@ Route::middleware(['role:super_admin'])->group(function() {
     Route::delete('/admin-management/{admin}', [AdminController::class, 'destroy'])->name('admin.destroy');
 });
 
-
+Route::resource('contacts', 'App\Http\Controllers\ContactController');
+Route::post('contacts/{id}/reply', 'App\Http\Controllers\ContactController@reply')->name('contacts.reply');
 require __DIR__.'/auth.php';

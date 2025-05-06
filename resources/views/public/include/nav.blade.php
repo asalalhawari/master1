@@ -10,7 +10,7 @@
     </div>
 <header>
         <!--? Header Start -->
-        <div class="header-area header-transparent pt-20">
+        <div class="pt-20 header-area header-transparent">
             <div class="main-header header-sticky">
                 <div class="container-fluid">
                     <div class="row align-items-center">
@@ -28,8 +28,8 @@
                                         <ul id="navigation">
                                             <li class="active"><a href="/">Home</a></li>
                                             <li><a href="about">About</a></li>
-                                            <li><a href="service1">Services</a></li>
-                                            <li><a href="booking">Booking</a></li>
+                                            <li><a href="service">Services</a></li>
+                                            <li><a href="book-appointment">Booking</a></li>
 
 
                                             <li><a href="contact">Contact</a></li>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AppointmentConfirmation;
+use App\Models\Service;
 
 class AppointmentController extends Controller
 {
@@ -22,22 +23,26 @@ class AppointmentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
+        
+        $v = $request->validate([
+            'name' => 'required',
             'email' => 'required|email',
-            'phone' => 'required|string|max:15',
-            'service' => 'required|string',
-            'date' => 'required|date',
-            'time' => 'required|date_format:H:i',
+            'phone' => 'required',
+            'service_id' => 'required',
+            'date' => 'required',
+            'time' => 'required',
         ]);
+
+
 
         $appointment = new Appointment();
         $appointment->name = $request->name;
         $appointment->email = $request->email;
         $appointment->phone = $request->phone;
-        $appointment->service = $request->service;
-        $appointment->date = $request->date;
-        $appointment->time = $request->time;
+        $appointment->service_id = $request->service_id;
+        $appointment->service = Service::find($request->service_id)->name;
+        $appointment->appointment_date = $request->date;
+        $appointment->appointment_time = $request->time;
         
         if (auth()->check()) {
             $appointment->user_id = auth()->id();
@@ -45,7 +50,7 @@ class AppointmentController extends Controller
 
         $appointment->save();
 
-        Mail::to($request->email)->send(new AppointmentConfirmation($appointment));
+        // Mail::to($request->email)->send(new AppointmentConfirmation($appointment));
 
         return redirect()->route('appointments.index')->with('success', 'Appointment booked successfully! A confirmation email has been sent.');
     }

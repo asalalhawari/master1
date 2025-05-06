@@ -7,7 +7,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-xl-12">
-                    <div class="hero-cap hero-cap2 pt-70 text-center">
+                    <div class="text-center hero-cap hero-cap2 pt-70">
                         <h2>Booking</h2>
                     </div>
                 </div>
@@ -18,7 +18,7 @@
 
 <div class="container15">
     <h2>Appointment Details</h2>
-    <form action="" method="POST" class="booking-form">
+    <form action="{{ route('book-appointment-store') }}" method="POST" class="booking-form">
         @csrf
         <div class="input-field">
             <label for="name">Your Name</label>
@@ -37,11 +37,10 @@
 
         <div class="input-field">
             <label for="service">Select Service</label>
-            <select id="service" name="service" required>
-                <option value="haircut">Haircut</option>
-                <option value="beard-trim">Beard Trim</option>
-                <option value="shave">Shave</option>
-                <option value="haircut-beard">Haircut & Beard Trim</option>
+            <select id="service" name="service_id" required>
+                @foreach ($services as $service )
+                    <option value="{{ $service->id }}">{{ $service->name }}</option>
+                @endforeach
             </select>
         </div>
 
